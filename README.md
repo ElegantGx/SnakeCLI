@@ -6,9 +6,9 @@
 
 ## 游戏截图
 
-![游戏开始界面 ](Pictures/Game Start.png)
+![游戏开始界面 ](./Pictures/Game Start.png)
 
-![死亡](Pictures/Game Over.png)
+![死亡](./Pictures/Game Over.png)
 
 ## 构建与运行
 

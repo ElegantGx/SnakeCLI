@@ -26,7 +26,7 @@ typedef struct {
     int len;
 } SnakeCLI;
 
-int game_main();
+int game();
 
 GameState menu (WINDOW *main_win, WINDOW *sentence_win, Position ter_size);
 

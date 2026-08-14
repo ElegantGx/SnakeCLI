@@ -21,7 +21,7 @@ int main() {
         }
 
         if (pid == 0) {
-            return game_main();
+            return game();
             break;
         }
 

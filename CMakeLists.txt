@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 23)
 
 find_package(Curses REQUIRED)
 
-add_executable(SnakeCLI game_main.c
+add_executable(SnakeCLI game.c
         utils.c
         utils.h
         menu.c

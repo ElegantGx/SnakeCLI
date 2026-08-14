@@ -4,6 +4,9 @@
 
 #include "game.h"
 
+#include <stdlib.h>
+#include <time.h>
+
 static sigjmp_buf ter_resize;
 
 static void handler(int sig) {
@@ -49,6 +52,8 @@ int game() {
     //创建句窗口
     WINDOW *sentence_win = newwin(3, ter_col, ter_row - 6, 0);
     keypad(sentence_win, true);
+
+    srandom((unsigned)time(nullptr));
 
     while (true) {
         switch (state) {

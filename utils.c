@@ -109,8 +109,8 @@ int select_option (WINDOW *win, WINDOW *options_wins[], const char *options_labe
 void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
     mvwprintw(main_win, snake_cli->head.row, snake_cli->head.col, "@");
     mvwprintw(
-        main_win, snake_cli->path[(snake_cli->step - snake_cli->len) % CAP].row,
-        snake_cli->path[(snake_cli->step - snake_cli->len) % CAP].col, " "
+        main_win, snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].row,
+        snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].col, " "
     );
 }
 

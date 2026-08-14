@@ -17,13 +17,12 @@ int main() {
 
         //错误处理
         if (pid == -1) {
-            perror("Fork failed.Maybe out of memory?");
+            perror("Fork failed");
             return 1;
         }
 
         if (pid == 0) {
             return game();
-            break;
         }
 
         //获取子进程退出码

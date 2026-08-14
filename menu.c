@@ -17,6 +17,7 @@ GameState menu (WINDOW *main_win, WINDOW *sentence_win, const Position ter_size)
     wclear(main_win);
     box(main_win, 0, 0);
     keypad(main_win, TRUE);
+    keypad(sentence_win, TRUE);
     nodelay(main_win, FALSE);
     print_logo_menu(main_win);
 
@@ -43,8 +44,7 @@ GameState menu (WINDOW *main_win, WINDOW *sentence_win, const Position ter_size)
     MenuState menu_selected_state = MENU_PLAY;
 
     //选择选项
-    int tmp_state = menu_selected_state;
-    menu_selected_state = select_option(sentence_win, menu_options_win, menu_options_label, 3, tmp_state);
+    menu_selected_state = select_option(sentence_win, menu_options_win, menu_options_label, 3, 0);
 
     switch (menu_selected_state) {
         case MENU_PLAY: {
@@ -65,6 +65,9 @@ GameState menu (WINDOW *main_win, WINDOW *sentence_win, const Position ter_size)
         wclear(menu_options_win[MENU_PLAY]);
         wclear(menu_options_win[MENU_ABOUT]);
         wclear(menu_options_win[MENU_EXIT]);
+        wrefresh(menu_options_win[MENU_PLAY]);
+        wrefresh(menu_options_win[MENU_ABOUT]);
+        wrefresh(menu_options_win[MENU_EXIT]);
         delwin(menu_options_win[MENU_PLAY]);
         delwin(menu_options_win[MENU_ABOUT]);
         delwin(menu_options_win[MENU_EXIT]);

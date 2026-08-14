@@ -37,8 +37,10 @@ int main() {
                 break;
             }
         }
+
+        //重置终端
+        system("stty sane");
     }
 
-    system("stty sane");
     return 0;
 }

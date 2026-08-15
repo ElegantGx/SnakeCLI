@@ -1,0 +1,24 @@
+name: Build macOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ncurses
+        run: brew install ncurses
+
+      - name: Build
+        run: |
+          cmake -B build -DCMAKE_PREFIX_PATH=$(brew --prefix ncurses)
+          cmake --build build
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: SnakeCLI-macOS
+          path: build/SnakeCLI

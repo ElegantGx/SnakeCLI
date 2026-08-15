@@ -3,6 +3,13 @@ project(SnakeCLI C)
 
 set(CMAKE_C_STANDARD 23)
 
+if(APPLE)
+    execute_process(COMMAND brew --prefix ncurses
+                    OUTPUT_VARIABLE BREW_NCURSES_PREFIX
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(CMAKE_PREFIX_PATH ${BREW_NCURSES_PREFIX} ${CMAKE_PREFIX_PATH})
+endif()
+
 find_package(Curses REQUIRED)
 set(CURSES_NEED_NCURSES TRUE) 
 

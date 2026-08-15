@@ -10,8 +10,8 @@ if(APPLE)
     set(CMAKE_PREFIX_PATH ${BREW_NCURSES_PREFIX} ${CMAKE_PREFIX_PATH})
 endif()
 
-find_package(Curses REQUIRED)
 set(CURSES_NEED_NCURSES TRUE)
+find_package(Curses REQUIRED)
 
 add_executable(SnakeCLI game.c
         utils.c

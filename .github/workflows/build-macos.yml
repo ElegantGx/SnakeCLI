@@ -14,7 +14,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake -B build -DCMAKE_PREFIX_PATH=$(brew --prefix ncurses)
+          cmake -B build -DCMAKE_PREFIX_PATH=$(brew --prefix ncurses) -DCURSES_NEED_NCURSES=ON
           cmake --build build
 
       - name: Upload binary

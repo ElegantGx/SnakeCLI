@@ -9,13 +9,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install ncurses
-        run: brew install ncurses
-
       - name: Build
         run: |
           cmake -B build
           cmake --build build
+          otool -L build/SnakeCLI
 
       - name: Upload binary
         uses: actions/upload-artifact@v4

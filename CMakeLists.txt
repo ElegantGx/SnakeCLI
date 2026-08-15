@@ -18,5 +18,8 @@ add_executable(SnakeCLI game.c
 target_link_libraries(SnakeCLI ${CURSES_LIBRARIES})
 
 if(APPLE)
-    target_compile_definitions(SnakeCLI PRIVATE _DARWIN_C_SOURCE)
+    target_compile_definitions(SnakeCLI PRIVATE 
+        _DARWIN_C_SOURCE
+        _XOPEN_SOURCE_EXTENDED
+    )
 endif()

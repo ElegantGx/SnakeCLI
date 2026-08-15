@@ -4,6 +4,7 @@ project(SnakeCLI C)
 set(CMAKE_C_STANDARD 23)
 
 find_package(Curses REQUIRED)
+set(CURSES_NEED_NCURSES TRUE) 
 
 add_executable(SnakeCLI game.c
         utils.c
@@ -15,3 +16,7 @@ add_executable(SnakeCLI game.c
 )
 
 target_link_libraries(SnakeCLI ${CURSES_LIBRARIES})
+
+if(APPLE)
+    target_compile_definitions(SnakeCLI PRIVATE _DARWIN_C_SOURCE)
+endif()

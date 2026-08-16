@@ -12,7 +12,7 @@ jobs:
       - name: Install Cygwin toolchain
         uses: cygwin/cygwin-install-action@v6
         with:
-          packages: gcc-core libncurses-devel ncurses terminfo terminfo-extra
+          packages: gcc-core libncurses-devel ncurses terminfo terminfo-extra zip
 
       - name: Build
         shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail -o igncr {0}
@@ -35,11 +35,17 @@ jobs:
               cp "$dll" "$DIST/bin/"
           done
           mkdir -p "$DIST/usr/share"
-          cp -r /usr/share/terminfo "$DIST/usr/share/"
+          cp -rL /usr/share/terminfo "$DIST/usr/share/"
           ls -l "$DIST/bin"
+
+      - name: Zip package
+        shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail -o igncr {0}
+        run: |
+          cd "$(cygpath "$GITHUB_WORKSPACE")"
+          zip -qr SnakeCLI-windows-x86_64.zip SnakeCLI-windows-x86_64
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: SnakeCLI-windows-x86_64
-          path: SnakeCLI-windows-x86_64/
+          path: SnakeCLI-windows-x86_64.zip

@@ -15,7 +15,7 @@ jobs:
           packages: gcc-core libncurses-devel curl
 
       - name: Build
-        shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail {0}
+        shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail -o igncr {0}
         run: |
           cd "$(cygpath "$GITHUB_WORKSPACE")"
           gcc -std=gnu2x -O2 -Wall \
@@ -24,7 +24,7 @@ jobs:
           strip SnakeCLI.exe
 
       - name: Bundle runtime DLLs
-        shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail {0}
+        shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail -o igncr {0}
         run: |
           cd "$(cygpath "$GITHUB_WORKSPACE")"
           mkdir -p SnakeCLI-windows-x86_64

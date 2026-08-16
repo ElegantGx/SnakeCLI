@@ -17,12 +17,7 @@ static void handler(int sig) {
     siglongjmp(ter_resize, 1);
 }
 
-int game(const int argc, char *argv[]) {
-    //处理参数模式
-    if (check_cli_mode(argc, argv)) {
-        return 0;
-    }
-
+int game() {
     //注册信号
     signal(SIGWINCH, handler);
 

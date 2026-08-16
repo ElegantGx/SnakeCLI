@@ -11,10 +11,10 @@
 #include <time.h>
 
 //处理参数模式
-int check_cli_mode(const int argc, char **argv) {
+int check_command_mode(const int argc, char **argv) {
     if (argc >= 2) {
         if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
-            printf("Snake CLI 1.0.1\n\n");
+            printf("SnakeCLI 1.0.1\n\n");
 
             printf("Copyright (c) 2026 ElegantGx\n\n");
             printf("License: GPLv3+ (GNU GPL version 3 or later)\n");
@@ -23,7 +23,7 @@ int check_cli_mode(const int argc, char **argv) {
             printf("This is free software: you are free to change\n");
             printf("and redistribute it. There is NO WARRANTY,\n");
             printf("to the extent permitted by law.\n");
-            return 1;
+            return 0;
         }
 
         if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-H") == 0) {
@@ -32,7 +32,7 @@ int check_cli_mode(const int argc, char **argv) {
             printf("Options:\n");
             printf("  -V, --version    Print version information and exit\n");
             printf("  -H, --help       Display this help message and exit\n");
-            return 1;
+            return 0;
         }
 
         fprintf(stderr, "snakecli: invalid option -- '%s'\n", argv[1]);
@@ -40,7 +40,7 @@ int check_cli_mode(const int argc, char **argv) {
         return 1;
 
     }
-    return 0;
+    return -1;
 }
 
 //绘制开始菜单的蛇LOGO

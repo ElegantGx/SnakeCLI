@@ -11,7 +11,7 @@
 
 #include "game.h"
 
-int check_cli_mode(int argc, char **argv);
+int check_command_mode(int argc, char **argv);
 
 void print_logo_menu (WINDOW *logo_win);
 

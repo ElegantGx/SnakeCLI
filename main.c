@@ -10,8 +10,12 @@
 #include <sys/wait.h>
 
 #include "game.h"
+#include "utils.h"
 
 int main(const int argc, char *argv[]) {
+    //处理参数模式
+    const int cli = check_command_mode(argc, argv);
+    if (cli >= 0) return cli;
 
     //进入看门狗循环
     while (true) {
@@ -24,7 +28,7 @@ int main(const int argc, char *argv[]) {
         }
 
         if (pid == 0) {
-            return game(argc, argv);
+            return game();
         }
 
         //获取子进程退出码

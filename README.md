@@ -17,7 +17,7 @@
 ```sh
 cmake -B build
 cmake --build build
-./build/SnakeCLI
+./build/snakecli
 ```
 
 ## 架构说明

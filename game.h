@@ -1,6 +1,8 @@
 //
 // Created by gx on 2026/8/12.
 //
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 ElegantGx
 
 #ifndef SNAKECLI_GAME_H
 #define SNAKECLI_GAME_H
@@ -26,7 +28,7 @@ typedef struct {
     int len;
 } SnakeCLI;
 
-int game();
+int game(int argc, char *argv[]);
 
 GameState menu (WINDOW *main_win, WINDOW *sentence_win, Position ter_size);
 

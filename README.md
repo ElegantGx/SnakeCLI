@@ -72,3 +72,6 @@ play.c    游戏本体（内部状态机、移动、苹果、渲染）
 utils.c   通用绘制与输入辅助
 game.h    共享数据结构（Position / SnakeCLI / GameState）
 ```
+
+---
+本项目使用GPL v3协议开源

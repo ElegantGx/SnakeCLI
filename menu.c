@@ -1,6 +1,8 @@
 //
 // Created by gx on 2026/8/12.
 //
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 ElegantGx
 
 #include <ncurses.h>
 #include "game.h"

@@ -1,8 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 ElegantGx
+
 #include <ncurses.h>
 #include <setjmp.h>
 #include <signal.h>
 
 #include "game.h"
+#include "utils.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -13,7 +17,12 @@ static void handler(int sig) {
     siglongjmp(ter_resize, 1);
 }
 
-int game() {
+int game(const int argc, char *argv[]) {
+    //处理参数模式
+    if (check_cli_mode(argc, argv)) {
+        return 0;
+    }
+
     //注册信号
     signal(SIGWINCH, handler);
 

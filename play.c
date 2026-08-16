@@ -1,6 +1,8 @@
 //
 // Created by gx on 2026/8/12.
 //
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 ElegantGx
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -8,7 +10,7 @@
 #include "game.h"
 #include "utils.h"
 
-#define render_time 80
+#define render_time 100
 
 //游玩与暂停
 typedef enum {PLAY_PLAYING, PLAY_PAUSED, PLAY_FINISHED, PLAY_QUIT} PlayState;
@@ -63,7 +65,7 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
     snake_cli.path[0] = snake_cli.head;
 
     snake_cli.apple = generate_apple_play(&snake_cli, game_max_size);
-    mvwprintw(main_win, snake_cli.apple.row, snake_cli.apple.col, "@");
+    mvwprintw(main_win, snake_cli.apple.row, snake_cli.apple.col, "O");
 
     wrefresh(main_win);
 
@@ -185,7 +187,7 @@ static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *sc
     if (snake_cli->apple.row == ERR) return PLAY_FINISHED;
 
     render_snake_play(main_win, snake_cli);
-    mvwprintw(main_win, snake_cli->apple.row, snake_cli->apple.col, "@");
+    mvwprintw(main_win, snake_cli->apple.row, snake_cli->apple.col, "O");
     wrefresh(main_win);
 
     char msg[32]="";

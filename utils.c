@@ -1,12 +1,47 @@
 //
 // Created by gx on 2026/8/11.
 //
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 ElegantGx
 
 #include "utils.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+//处理参数模式
+int check_cli_mode(const int argc, char **argv) {
+    if (argc >= 2) {
+        if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
+            printf("Snake CLI 1.0.1\n\n");
+
+            printf("Copyright (c) 2026 ElegantGx\n\n");
+            printf("License: GPLv3+ (GNU GPL version 3 or later)\n");
+            printf("         <https://gnu.org/licenses/gpl.html>\n\n");
+
+            printf("This is free software: you are free to change\n");
+            printf("and redistribute it. There is NO WARRANTY,\n");
+            printf("to the extent permitted by law.\n");
+            return 1;
+        }
+
+        if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-H") == 0) {
+            printf("Usage: snakecli [OPTION]\n");
+            printf("Start the Snake game in your terminal.\n\n");
+            printf("Options:\n");
+            printf("  -V, --version    Print version information and exit\n");
+            printf("  -H, --help       Display this help message and exit\n");
+            return 1;
+        }
+
+        fprintf(stderr, "snakecli: invalid option -- '%s'\n", argv[1]);
+        fprintf(stderr, "Try 'snakecli --help' for more information.\n");
+        return 1;
+
+    }
+    return 0;
+}
 
 //绘制开始菜单的蛇LOGO
 void print_logo_menu(WINDOW *logo_win) {

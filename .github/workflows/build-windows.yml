@@ -12,7 +12,7 @@ jobs:
       - name: Install Cygwin toolchain
         uses: cygwin/cygwin-install-action@v6
         with:
-          packages: gcc-core libncurses-devel curl
+          packages: gcc-core libncurses-devel
 
       - name: Build
         shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail -o igncr {0}
@@ -30,8 +30,6 @@ jobs:
           mkdir -p SnakeCLI-windows-x86_64
           cp SnakeCLI.exe SnakeCLI-windows-x86_64/
           cp LICENSE SnakeCLI-windows-x86_64/
-          curl -fsSL https://www.gnu.org/licenses/lgpl-3.0.txt \
-              -o SnakeCLI-windows-x86_64/COPYING.LGPLv3
           ldd SnakeCLI.exe | grep -oE '/[^ ]+\.dll' | while read -r dll; do
               cp "$dll" SnakeCLI-windows-x86_64/
           done

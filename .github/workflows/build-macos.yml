@@ -13,10 +13,11 @@ jobs:
         run: |
           cmake -B build
           cmake --build build
-          otool -L build/snakecli
+          strip build/snakecli -o snakecli-macOS-arm64
+          otool -L snakecli-macOS-arm64
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: SnakeCLI-macOS
-          path: build/snakecli
+          name: snakecli-macOS
+          path: snakecli-macOS-arm64

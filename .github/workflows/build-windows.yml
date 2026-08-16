@@ -1,0 +1,44 @@
+name: Build Windows (Cygwin)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Cygwin toolchain
+        uses: cygwin/cygwin-install-action@v6
+        with:
+          packages: gcc-core libncurses-devel curl
+
+      - name: Build
+        shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail {0}
+        run: |
+          cd "$(cygpath "$GITHUB_WORKSPACE")"
+          gcc -std=gnu2x -O2 -Wall \
+              -o SnakeCLI.exe game.c utils.c menu.c play.c main.c \
+              -lncurses
+          strip SnakeCLI.exe
+
+      - name: Bundle runtime DLLs
+        shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail {0}
+        run: |
+          cd "$(cygpath "$GITHUB_WORKSPACE")"
+          mkdir -p SnakeCLI-windows-x86_64
+          cp SnakeCLI.exe SnakeCLI-windows-x86_64/
+          cp LICENSE SnakeCLI-windows-x86_64/
+          curl -fsSL https://www.gnu.org/licenses/lgpl-3.0.txt \
+              -o SnakeCLI-windows-x86_64/COPYING.LGPLv3
+          ldd SnakeCLI.exe | grep -oE '/[^ ]+\.dll' | while read -r dll; do
+              cp "$dll" SnakeCLI-windows-x86_64/
+          done
+          ls -l SnakeCLI-windows-x86_64/
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: SnakeCLI-windows-x86_64
+          path: SnakeCLI-windows-x86_64/

@@ -18,6 +18,7 @@ int main(const int argc, char *argv[]) {
     if (cli >= 0) return cli;
 
     //进入看门狗循环
+    int crash_count = 0;
     while (true) {
         const pid_t pid = fork();
 
@@ -41,6 +42,17 @@ int main(const int argc, char *argv[]) {
             if (exit_code == 0) {
                 break;
             }
+            if (exit_code == 2) {
+                crash_count++;
+            }
+        } else if (WIFSIGNALED(status)) {
+            crash_count++;
+        }
+        
+        if (crash_count > 5) {
+            system("stty sane");
+            printf("Unknown Error\n");
+            return 1;
         }
 
         //重置终端

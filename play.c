@@ -10,7 +10,7 @@
 #include "game.h"
 #include "utils.h"
 
-#define render_time 100
+#define default_render_time 150
 
 //游玩与暂停
 typedef enum {PLAY_PLAYING, PLAY_PAUSED, PLAY_FINISHED, PLAY_QUIT} PlayState;
@@ -75,7 +75,12 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
 
     wclear(sentence_win);
 
+    int render_time;
     while (play_state != PLAY_QUIT) {
+        render_time = default_render_time - 5 * (snake_cli.len / 5);
+        if (render_time < 10) {
+            render_time = 10;
+        }
         napms(render_time);
 
         switch (play_state) {

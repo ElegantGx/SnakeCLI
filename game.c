@@ -6,7 +6,6 @@
 #include <signal.h>
 
 #include "game.h"
-#include "utils.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -72,7 +71,7 @@ int game() {
             case EXIT: goto cleanup_by_exit;
             default:
                 endwin();
-                return 1;
+                return 2;
         }
     }
 

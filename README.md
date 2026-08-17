@@ -8,7 +8,7 @@
 
 ![游戏开始界面 ](./Pictures/game_start.png)
 
-![死亡](./Pictures/game_over.png)
+![死亡](./Pictures/game_is_over.png)
 
 ## 构建与运行
 

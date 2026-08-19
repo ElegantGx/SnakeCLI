@@ -86,15 +86,18 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
         switch (play_state) {
             case PLAY_PLAYING:
                 play_state = play_playing(main_win, sentence_win, score_win, &snake_cli, ter_size, game_max_size, &play_direction);
+                flushinp();
                 break;
             case PLAY_PAUSED:
                 wclear(score_win);
                 wrefresh(score_win);
+                flushinp();
                 play_state = play_paused(main_win, sentence_win, ter_size, &state);
                 break;
             case PLAY_FINISHED:
                 wclear(score_win);
                 wrefresh(score_win);
+                flushinp();
                 play_state = play_finished(main_win, sentence_win, &snake_cli, ter_size, &state);
                 break;
             default:

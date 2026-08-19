@@ -17,6 +17,10 @@ int main(const int argc, char *argv[]) {
     const int cli = check_command_mode(argc, argv);
     if (cli >= 0) return cli;
 
+    //忽略Ctrl C与Ctrl \，防止终端错乱
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+
     //进入看门狗循环
     int crash_count = 0;
     while (true) {
@@ -39,10 +43,11 @@ int main(const int argc, char *argv[]) {
         //判断是否正常退出
         if (WIFEXITED(status)) {
             const int exit_code = WEXITSTATUS(status);
-            if (exit_code == 0) {
+            if (exit_code == 0 || exit_code == 2 || exit_code == 3) {
+                system("stty sane");
                 break;
             }
-            if (exit_code == 2) {
+            if (exit_code == 4) {
                 crash_count++;
             }
         } else if (WIFSIGNALED(status)) {

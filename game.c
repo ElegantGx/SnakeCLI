@@ -11,18 +11,36 @@
 #include <time.h>
 
 static sigjmp_buf ter_resize;
+static sigjmp_buf sigint_env;
+static sigjmp_buf sigquit_env;
 
-static void handler(int sig) {
+static void handler(const int sig) {
+    if (sig == SIGINT) {
+        siglongjmp(sigint_env, 1);
+    }
+    if (sig == SIGQUIT) {
+        siglongjmp(sigquit_env, 1);
+    }
     siglongjmp(ter_resize, 1);
 }
 
 int game() {
     //注册信号
     signal(SIGWINCH, handler);
+    signal(SIGINT, handler);
+    signal(SIGQUIT, handler);
 
     //处理大小变化
     if (sigsetjmp(ter_resize, 1)) {
         goto cleanup_by_resize;
+    }
+    //处理Ctrl C
+    if (sigsetjmp(sigint_env, 1)) {
+        goto cleanup_by_sigint;
+    }
+    //处理退出
+    if (sigsetjmp(sigquit_env, 1)) {
+        goto cleanup_by_sigquit;
     }
 
     //定义默认状态
@@ -71,7 +89,7 @@ int game() {
             case EXIT: goto cleanup_by_exit;
             default:
                 endwin();
-                return 2;
+                return 4;
         }
     }
 
@@ -84,4 +102,12 @@ int game() {
     cleanup_by_resize:
         endwin();
         return 1;
+
+    cleanup_by_sigint:
+        endwin();
+        return 2;
+
+    cleanup_by_sigquit:
+        endwin();
+        return 3;
 }

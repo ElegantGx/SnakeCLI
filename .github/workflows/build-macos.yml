@@ -27,7 +27,7 @@ jobs:
           ./snakecli-macOS-arm64 --help | grep Usage
           # pty 冒烟：启动 -> 菜单渲染 -> 方向键导航 -> Exit 正常退出
           python3 - "$PWD/snakecli-macOS-arm64" <<'PYEOF'
-          import os, pty, sys, time, select, fcntl, termios, struct, signal
+          import os, pty, sys, time, select, fcntl, termios, struct, signal, curses, re
 
           BIN = sys.argv[1]
           pid, fd = pty.fork()
@@ -36,33 +36,51 @@ jobs:
               os.environ["TERM"] = "xterm-256color"
               os.execv(BIN, [BIN])
 
+          # 方向键序列不猜，直接查 terminfo（各平台定义可能不同）
+          curses.setupterm("xterm-256color")
+          RIGHT = curses.tigetstr("kcuf1") or b"\x1bOC"
+          print("kcuf1 =", RIGHT)
+
+          def drain(timeout):
+              d = b""
+              while True:
+                  r, _, _ = select.select([fd], [], [], timeout)
+                  if not r:
+                      break
+                  try:
+                      c = os.read(fd, 65536)
+                  except OSError:
+                      break
+                  if not c:
+                      break
+                  d += c
+                  timeout = 0
+              return d
+
           buf = b""
           deadline = time.time() + 15
           while time.time() < deadline and b"About" not in buf:
-              r, _, _ = select.select([fd], [], [], 0.2)
-              if r:
-                  try:
-                      buf += os.read(fd, 65536)
-                  except OSError:
-                      break
+              buf += drain(0.2)
           if b"About" not in buf:
               print("FAIL: menu did not render")
               os.kill(pid, signal.SIGKILL)
               sys.exit(1)
 
           # 菜单顺序 Play -> About -> Exit，右右回车即退出
-          # 注意应用模式(smkx)下方向键序列是 \EOC 而非 \E[C
-          os.write(fd, b"\x1bOC\x1bOC\n")
+          os.write(fd, RIGHT + RIGHT + b"\n")
           deadline = time.time() + 10
           while True:
               wpid, status = os.waitpid(pid, os.WNOHANG)
               if wpid == pid:
                   break
               if time.time() > deadline:
-                  print("FAIL: game did not exit")
+                  print("FAIL: game did not exit, screen tail:")
+                  tail = re.sub(rb"\x1b\[[0-9;?]*[A-Za-z]", b"", drain(0.5))
+                  print(re.sub(rb"[^ -~\n]", b"", tail)[-300:])
                   os.kill(pid, signal.SIGKILL)
                   sys.exit(1)
               time.sleep(0.2)
+              drain(0)
           if not (os.WIFEXITED(status) and os.WEXITSTATUS(status) == 0):
               print(f"FAIL: bad exit status {status}")
               sys.exit(1)

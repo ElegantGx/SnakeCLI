@@ -14,7 +14,6 @@ jobs:
           cmake -B build
           cmake --build build
           strip build/snakecli -o snakecli-macOS-arm64
-          # strip 后显式重签 ad-hoc 临时签名，保证签名与产物一致
           codesign --force --sign - snakecli-macOS-arm64
           codesign --verify --verbose snakecli-macOS-arm64
           otool -L snakecli-macOS-arm64

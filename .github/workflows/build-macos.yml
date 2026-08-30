@@ -14,6 +14,8 @@ jobs:
           cmake -B build
           cmake --build build
           strip build/snakecli -o snakecli-macOS-arm64
+          codesign --force --sign - snakecli-macOS-arm64
+          codesign --verify --verbose snakecli-macOS-arm64
           otool -L snakecli-macOS-arm64
 
       - name: Upload binary

@@ -11,7 +11,7 @@
 #include <time.h>
 
 //处理参数模式
-int check_command_mode(const int argc, char **argv) {
+int check_command_mode(const int argc, const char **argv) {
     if (argc >= 2) {
         if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
             printf("SnakeCLI 1.0.3-rc1\n\n");
@@ -151,7 +151,7 @@ void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
 
 //读取输入
 int get_input_play(WINDOW *win) {
-    int input = wgetch(win);
+    const int input = wgetch(win);
 
     static const int available_keys[] = {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, 27};
     for (size_t i = 0; i < sizeof(available_keys)/sizeof(available_keys[0]); ++i) {

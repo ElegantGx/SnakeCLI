@@ -30,7 +30,7 @@ GameState menu (WINDOW *main_win, WINDOW *sentence_win, const Position ter_size)
 
     //定义选项数组
     WINDOW *menu_options_win[3];
-    const char *menu_options_label[] = {
+    const char *menu_options_label[3] = {
         [MENU_PLAY] = "Play",
         [MENU_ABOUT] = "About",
         [MENU_EXIT] = "Exit",

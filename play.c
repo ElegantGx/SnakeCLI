@@ -224,7 +224,7 @@ static PlayState play_paused(WINDOW *main_win, WINDOW *sentence_win, const Posit
     wrefresh(sentence_win);
 
     WINDOW *play_option_win[2];
-    const char *play_option_label[] = {
+    const char *play_option_label[2] = {
         [CONTINUE] = "Continue",
         [RETURN] = "Return to Menu",
     };
@@ -291,7 +291,8 @@ static PlayState play_finished(WINDOW *main_win, WINDOW *sentence_win, const Sna
 
     wrefresh(main_win);
 
-    PlayFinishMenu play_finish_menu = select_option(main_win, play_finish_win, play_finish_win_label, 3, 0);
+    const PlayFinishMenu play_finish_menu = select_option(main_win, play_finish_win, play_finish_win_label, 3, 0);
+
 
     switch (play_finish_menu) {
         case RESTART:

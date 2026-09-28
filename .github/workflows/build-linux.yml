@@ -1,0 +1,32 @@
+name: Build Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libncurses-dev
+
+      - name: Build
+        run: |
+          cmake -B build
+          cmake --build build
+          strip build/snakecli -o snakecli-linux-x86_64
+          ldd snakecli-linux-x86_64
+
+      - name: Package
+        run: |
+          tar -czf snakecli-linux-x86_64.tar.gz snakecli-linux-x86_64
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakecli-linux-x86_64
+          path: snakecli-linux-x86_64.tar.gz

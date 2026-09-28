@@ -1,0 +1,44 @@
+name: Build Linux
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: '上传到的 Release tag（留空则只传 artifact）'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libncurses-dev
+
+      - name: Lower CMake requirement
+        run: sed -i 's/cmake_minimum_required(VERSION 4.3)/cmake_minimum_required(VERSION 3.31)/' CMakeLists.txt
+
+      - name: Build
+        run: |
+          cmake -B build
+          cmake --build build
+          strip build/snakecli -o snakecli-linux-x86_64
+          ldd snakecli-linux-x86_64
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snakecli-linux-x86_64
+          path: snakecli-linux-x86_64
+
+      - name: Upload to Release
+        if: inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ inputs.release_tag }}" snakecli-linux-x86_64 --clobber

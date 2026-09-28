@@ -2,6 +2,13 @@ name: Build Windows (Cygwin)
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: '上传到的 Release tag（留空则只传 artifact）'
+        required: false
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -12,7 +19,7 @@ jobs:
       - name: Install Cygwin toolchain
         uses: cygwin/cygwin-install-action@v6
         with:
-          packages: gcc-core libncurses-devel ncurses terminfo terminfo-extra zip
+          packages: gcc-core libncurses-devel ncurses terminfo terminfo-extra zip curl
 
       - name: Build
         shell: D:\cygwin\bin\bash.exe --noprofile --norc -eo pipefail -o igncr {0}
@@ -31,6 +38,7 @@ jobs:
           mkdir -p "$DIST/bin"
           cp SnakeCLI.exe "$DIST/bin/"
           cp LICENSE "$DIST/"
+          curl -fsSL --retry 3 https://raw.githubusercontent.com/spdx/license-list-data/main/text/LGPL-3.0-only.txt -o "$DIST/COPYING.LGPLv3"
           ldd SnakeCLI.exe | grep -oE '/[^ ]+\.dll' | while read -r dll; do
               cp "$dll" "$DIST/bin/"
           done
@@ -49,3 +57,9 @@ jobs:
         with:
           name: SnakeCLI-windows-x86_64
           path: SnakeCLI-windows-x86_64.zip
+
+      - name: Upload to Release
+        if: inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ inputs.release_tag }}" SnakeCLI-windows-x86_64.zip --clobber

@@ -99,8 +99,11 @@ void print_about_menu(WINDOW *about_win) {
 
 //绘制新选项
 void create_options_win(WINDOW *options_wins[], const char *options_label[], const int options_count, const Position size) {
-    for (int i = 0; i < options_count; i++) {
-        options_wins[i] = newwin(3, size.col / options_count, size.row - 3, i * (size.col / options_count));
+    int option_cols = size.col / options_count;
+    for (int i = 0; i < options_count ; i++) {
+        const int begin_col = i * option_cols;
+        if (i == options_count - 1) option_cols = size.col - i * option_cols;
+        options_wins[i] = newwin(3, option_cols, size.row - 3, begin_col);
         box(options_wins[i], 0, 0);
         print_center_window(options_wins[i], options_label[i]);
         wrefresh(options_wins[i]);

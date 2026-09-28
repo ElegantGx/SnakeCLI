@@ -46,21 +46,34 @@ int game() {
     GameState state = MENU;
 
     initscr();      //接管终端
-    cbreak();       //按键立刻生效
-    noecho();       //按键不回显
-    curs_set(0);    //隐藏光标
-    set_escdelay(20); //处理ESC延迟
-    clear();        //清空默认状态
 
     //获取终端大小
     int ter_row, ter_col;
     getmaxyx(stdscr, ter_row, ter_col);
     if (ter_row < 20 || ter_col < 35) {
         endwin();
-        printf("Your terminal is too small.\n");
+        fprintf(stderr, "Your terminal is too small.\n");
         return 0;
     }
     const Position ter_size = {.row = ter_row, .col = ter_col};
+
+    //获取终端彩色能力
+    if (!has_colors()) {
+        endwin();
+        fprintf(stderr, "Your terminal does not support colors.\n");
+        return 0;
+    }
+
+    cbreak();       //按键立刻生效
+    noecho();       //按键不回显
+    curs_set(0);    //隐藏光标
+    set_escdelay(20); //处理ESC延迟
+    start_color();    //开启颜色
+    use_default_colors(); //允许用 -1 表示终端默认色
+    clear();        //清空默认状态
+
+    init_pair(CP_SNAKE, COLOR_BLACK, COLOR_GREEN);
+    init_pair(CP_APPLE, COLOR_BLACK, COLOR_RED);
 
     //注册窗口名
     putp("\033]0;Snake CLI\007");

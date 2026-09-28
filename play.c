@@ -60,12 +60,12 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
     box(main_win, 0, 0);
     snake_cli.head.row = game_max_size.row / 2;
     snake_cli.head.col = (game_max_size.col - 1) / 2;
-    mvwprintw(main_win, snake_cli.head.row, snake_cli.head.col, SNAKE_GLYPH);
+    mvwaddch(main_win, snake_cli.head.row, snake_cli.head.col, SNAKE_CELL);
 
     snake_cli.path[0] = snake_cli.head;
 
     snake_cli.apple = generate_apple_play(&snake_cli, game_max_size);
-    mvwprintw(main_win, snake_cli.apple.row, snake_cli.apple.col, APPLE_GLYPH);
+    mvwaddch(main_win, snake_cli.apple.row, snake_cli.apple.col, APPLE_CELL);
 
     wrefresh(main_win);
 
@@ -193,7 +193,7 @@ static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *sc
     if (snake_cli->apple.row == ERR) return PLAY_FINISHED;
 
     render_snake_play(main_win, snake_cli);
-    mvwprintw(main_win, snake_cli->apple.row, snake_cli->apple.col, APPLE_GLYPH);
+    mvwaddch(main_win, snake_cli->apple.row, snake_cli->apple.col, APPLE_CELL);
     wrefresh(main_win);
 
     char msg[32]="";

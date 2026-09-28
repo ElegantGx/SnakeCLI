@@ -9,6 +9,9 @@
 
 #define CAP 1000
 
+#define SNAKE_GLYPH "@"
+#define APPLE_GLYPH "O"
+
 #include <ncurses.h>
 
 //核心状态

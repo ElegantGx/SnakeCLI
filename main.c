@@ -12,7 +12,7 @@
 #include "game.h"
 #include "utils.h"
 
-int main(const int argc, char *argv[]) {
+int main(const int argc, const char *argv[]) {
     //处理参数模式
     const int cli = check_command_mode(argc, argv);
     if (cli >= 0) return cli;

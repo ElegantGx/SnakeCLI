@@ -11,10 +11,10 @@
 #include <time.h>
 
 //处理参数模式
-int check_command_mode(const int argc, char **argv) {
+int check_command_mode(const int argc, const char **argv) {
     if (argc >= 2) {
         if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
-            printf("SnakeCLI 1.0.3\n\n");
+            printf("SnakeCLI 1.0.3-rc1\n\n");
 
             printf("Copyright (c) 2026 ElegantGx\n\n");
             printf("License: GPLv3+ (GNU GPL version 3 or later)\n");
@@ -142,7 +142,7 @@ int select_option (WINDOW *win, WINDOW *options_wins[], const char *options_labe
 
 //渲染蛇
 void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
-    mvwprintw(main_win, snake_cli->head.row, snake_cli->head.col, "@");
+    mvwprintw(main_win, snake_cli->head.row, snake_cli->head.col, SNAKE_GLYPH);
     mvwprintw(
         main_win, snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].row,
         snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].col, " "
@@ -151,7 +151,7 @@ void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
 
 //读取输入
 int get_input_play(WINDOW *win) {
-    int input = wgetch(win);
+    const int input = wgetch(win);
 
     static const int available_keys[] = {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, 27};
     for (size_t i = 0; i < sizeof(available_keys)/sizeof(available_keys[0]); ++i) {

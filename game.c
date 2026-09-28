@@ -4,11 +4,10 @@
 #include <ncurses.h>
 #include <setjmp.h>
 #include <signal.h>
-
-#include "game.h"
-
 #include <stdlib.h>
 #include <time.h>
+
+#include "game.h"
 
 static sigjmp_buf ter_resize;
 static sigjmp_buf sigint_env;

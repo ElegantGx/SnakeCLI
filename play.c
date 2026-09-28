@@ -78,9 +78,7 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
     int render_time;
     while (play_state != PLAY_QUIT) {
         render_time = default_render_time - 5 * (snake_cli.len / 5);
-        if (render_time < 10) {
-            render_time = 10;
-        }
+        if (render_time < 10) render_time = 10;
         napms(render_time);
 
         switch (play_state) {

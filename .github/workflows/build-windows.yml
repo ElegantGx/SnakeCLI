@@ -38,7 +38,7 @@ jobs:
           mkdir -p "$DIST/bin"
           cp SnakeCLI.exe "$DIST/bin/"
           cp LICENSE "$DIST/"
-          curl -fsSL https://www.gnu.org/licenses/lgpl-3.0.txt -o "$DIST/COPYING.LGPLv3"
+          curl -fsSL --retry 3 https://raw.githubusercontent.com/spdx/license-list-data/main/text/LGPL-3.0-only.txt -o "$DIST/COPYING.LGPLv3"
           ldd SnakeCLI.exe | grep -oE '/[^ ]+\.dll' | while read -r dll; do
               cp "$dll" "$DIST/bin/"
           done

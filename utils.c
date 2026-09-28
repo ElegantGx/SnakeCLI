@@ -58,13 +58,13 @@ void print_logo_menu(WINDOW *logo_win) {
         "      | |___| |___ | |",
         "       \\____|_____|___|"
     };
-    int logo_rows = 11;
-    int logo_cols  = 28;
+    constexpr int logo_rows = 11;
+    constexpr int logo_cols  = 28;
 
     int rows, cols;
     getmaxyx(logo_win, rows, cols);
-    int start_y = (rows - logo_rows) / 2;
-    int start_x = (cols - logo_cols) / 2;
+    const int start_y = (rows - logo_rows) / 2;
+    const int start_x = (cols - logo_cols) / 2;
 
     for (int i = 0; i < logo_rows; i++)
         mvwprintw(logo_win, start_y + i, start_x, "%s", logo[i]);

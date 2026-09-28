@@ -142,7 +142,7 @@ int select_option (WINDOW *win, WINDOW *options_wins[], const char *options_labe
 
 //渲染蛇
 void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
-    mvwprintw(main_win, snake_cli->head.row, snake_cli->head.col, "@");
+    mvwprintw(main_win, snake_cli->head.row, snake_cli->head.col, SNAKE_GLYPH);
     mvwprintw(
         main_win, snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].row,
         snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].col, " "

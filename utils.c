@@ -16,7 +16,7 @@
 int check_command_mode(const int argc, const char **argv) {
     if (argc >= 2) {
         if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
-            printf("snakecli 1.1.0-rc.1\n\n");
+            printf("snakecli 1.1.0-rc.2\n\n");
 
             printf("Copyright (c) 2026 ElegantGx\n\n");
             printf("License: GPLv3+ (GNU GPL version 3 or later)\n");

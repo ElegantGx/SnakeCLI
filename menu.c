@@ -115,11 +115,11 @@ static void print_about_menu(WINDOW *about_win) {
     mvwprintw(about_win, 1, 2, "About Snake:");
     mvwprintw(about_win, 3, 2,"This game is made by Gx.");
     mvwprintw(about_win, 5, 2,"How to play the game?");
-    mvwprintw(about_win, 7, 2,"Press UP DOWN LEFT RIGHT to move the snake.");
+    mvwprintw(about_win, 7, 2,"Press UP DOWN LEFT RIGHT or WASD to move the snake.");
     mvwprintw(about_win, 8, 2,"Press ENTER to confirm.");
-    mvwprintw(about_win, 9, 2,"Press ESC to paused game.");
+    mvwprintw(about_win, 9, 2,"Press ESC to pause game.");
     mvwprintw(about_win, 11, 2, "Don't resize Terminal when you are playing.");
-    mvwprintw(about_win, 12, 2, "The game wil reset.");
+    mvwprintw(about_win, 12, 2, "The game will reset.");
     mvwprintw(about_win, 14, 2,"Now press ESC to close About.");
     wrefresh(about_win);
 }

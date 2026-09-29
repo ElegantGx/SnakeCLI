@@ -170,7 +170,9 @@ static void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
 static int get_input_play(WINDOW *win) {
     const int input = wgetch(win);
 
-    static const int available_keys[] = {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, 27};
+    static constexpr int available_keys[] = {
+        KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, 'W', 'S', 'A', 'D', 'w', 's', 'a', 'd', 27
+    };
     for (size_t i = 0; i < sizeof(available_keys)/sizeof(available_keys[0]); ++i) {
         if (input == available_keys[i]) return input;
     }
@@ -181,12 +183,20 @@ static int get_input_play(WINDOW *win) {
 static int map_the_key_play(const int input) {
     switch (input) {
         case KEY_UP:
+        case 'W':
+        case 'w':
             return 0;
         case KEY_DOWN:
+        case 'S':
+        case 's':
             return 1;
         case KEY_LEFT:
+        case 'A':
+        case 'a':
             return 2;
         case KEY_RIGHT:
+        case 'D':
+        case 'd':
             return 3;
         case 27:
             return -1;
@@ -250,7 +260,7 @@ static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *sc
     wrefresh(main_win);
 
     char msg[32]="";
-    sprintf(msg, "Score: %d", snake_cli->len - 1);
+    snprintf(msg, sizeof msg, "Score: %d", snake_cli->len - 1);
     box(score_win, 0, 0);
     print_center_window(score_win, msg);
     wrefresh(score_win);
@@ -332,11 +342,11 @@ static PlayState play_finished(WINDOW *main_win, WINDOW *sentence_win, const Sna
     char msg[32]="";
 
     if (snake_cli->len == CAP - 1 || snake_cli->apple.row == ERR) {
-        sprintf(msg, "You Win! Score: %d", snake_cli->len - 1);
+        snprintf(msg, sizeof msg, "You Win! Score: %d", snake_cli->len - 1);
         print_center_window(main_win, msg);
     }
     else {
-        sprintf(msg, "Game Over...Score: %d", snake_cli->len - 1);
+        snprintf(msg, sizeof msg, "Game Over...Score: %d", snake_cli->len - 1);
         print_center_window(main_win, msg);
     }
 

@@ -15,7 +15,7 @@
 //处理参数模式
 int check_command_mode(const int argc, const char **argv) {
     if (argc >= 2) {
-        if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
+        if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "-V") == 0) {
             printf("snakecli 1.1.0-rc.2\n\n");
 
             printf("Copyright (c) 2026 ElegantGx\n\n");
@@ -28,18 +28,18 @@ int check_command_mode(const int argc, const char **argv) {
             return 0;
         }
 
-        if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-H") == 0) {
+        if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-H") == 0) {
             printf("Usage: snakecli [OPTION]\n");
             printf("Start the Snake game in your terminal.\n\n");
             printf("Options:\n");
-            printf("  -V, --version    Print version information and exit\n");
-            printf("  -H, --help       Display this help message and exit\n");
-            printf("  -C, --check      Check terminal width\n");
+            printf("  -v, -V, --version    Print version information and exit\n");
+            printf("  -h, -H, --help       Display this help message and exit\n");
+            printf("  -c, -C, --check      Check terminal width\n");
             return 0;
         }
 
-        if (strcmp(argv[1], "--check") == 0 || strcmp(argv[1], "-C") == 0) {
-            printf("Check if your terminal width is a multiple of 6\n");
+        if (strcmp(argv[1], "--check") == 0 || strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "-C") == 0) {
+            printf("Check if your terminal size is perfect\n");
             printf("Press Ctrl C to quit\n\n");
 
             sigset_t sig_resize;                    //声明信号合集
@@ -55,13 +55,20 @@ int check_command_mode(const int argc, const char **argv) {
                     return 1;
                 }
 
-                printf("Terminal size: %dx%d", ter_size.ws_col, ter_size.ws_row);
+                int col = ter_size.ws_col;
+                int row = ter_size.ws_row;
+                printf("Terminal size: %dx%d", col, row);
 
-                if (ter_size.ws_col % 6 == 0) {
-                    const int col_before = ter_size.ws_col;
+                if (col % 6 == 0 && row > 23) {
+                    const int col_before = col;
+                    const int row_before = row;
+
+                    // 防抖
                     usleep(100000);
                     ioctl(STDOUT_FILENO, TIOCGWINSZ, &ter_size);
-                    if (ter_size.ws_col == col_before) {   // 防抖
+                    col = ter_size.ws_col;
+                    row = ter_size.ws_row;
+                    if (col == col_before && row == row_before) {
                         printf("\tGood size!\n");
                         return 0;
                     }
@@ -69,7 +76,9 @@ int check_command_mode(const int argc, const char **argv) {
                     continue;
                 }
 
-                printf("\ttry %dx%d or %dx%d", ter_size.ws_col + (6 - ter_size.ws_col % 6), ter_size.ws_row, ter_size.ws_col - ter_size.ws_col % 6, ter_size.ws_row);
+                int recommend_row = 24;
+                if (row > 24) recommend_row = row;
+                printf("\ttry %dx%d or %dx%d", col + (6 - col % 6), recommend_row, col - col % 6, recommend_row);
                 printf("\n");
 
                 int sig;

@@ -9,8 +9,11 @@
 
 #define CAP 1000
 
-#define SNAKE_GLYPH "@"
-#define APPLE_GLYPH "O"
+enum { CP_DEFAULT = 0, CP_SNAKE, CP_APPLE };
+
+#define DEFAULT_CELL  (' ' | COLOR_PAIR(CP_DEFAULT))
+#define SNAKE_CELL  (' ' | COLOR_PAIR(CP_SNAKE))
+#define APPLE_CELL  (' ' | COLOR_PAIR(CP_APPLE))
 
 #include <ncurses.h>
 

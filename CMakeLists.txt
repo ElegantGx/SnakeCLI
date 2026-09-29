@@ -6,13 +6,13 @@ set(CMAKE_C_STANDARD 23)
 set(CURSES_NEED_NCURSES TRUE)
 find_package(Curses REQUIRED)
 
-add_executable(snakecli game.c
+add_executable(snakecli main.c
+        game.c
+        game.h
+        menu.c
+        play.c
         utils.c
         utils.h
-        menu.c
-        game.h
-        play.c
-        main.c
 )
 
 target_include_directories(snakecli PRIVATE ${CURSES_INCLUDE_DIRS})

@@ -194,7 +194,7 @@ static int map_the_key_play(const int input) {
     }
 }
 
-void draw_cell(WINDOW *win, const Position cell_positon, const chtype cell_color) {
+static void draw_cell(WINDOW *win, const Position cell_positon, const chtype cell_color) {
     mvwaddch(win, cell_positon.row + 1, cell_positon.col * 2 + 1, cell_color);
     mvwaddch(win, cell_positon.row + 1, cell_positon.col * 2 + 2, cell_color);
 }

@@ -6,9 +6,11 @@
 
 #include "utils.h"
 
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
 
 //处理参数模式
 int check_command_mode(const int argc, const char **argv) {
@@ -32,7 +34,47 @@ int check_command_mode(const int argc, const char **argv) {
             printf("Options:\n");
             printf("  -V, --version    Print version information and exit\n");
             printf("  -H, --help       Display this help message and exit\n");
+            printf("  -C, --check      Check terminal width\n");
             return 0;
+        }
+
+        if (strcmp(argv[1], "--check") == 0 || strcmp(argv[1], "-C") == 0) {
+            printf("Check if your terminal width is a multiple of 6\n");
+            printf("Press Ctrl C to quit\n\n");
+
+            sigset_t sig_resize;                    //声明信号合集
+            sigemptyset(&sig_resize);               //清零信号合集
+            sigaddset(&sig_resize, SIGWINCH);   //加入SIGWINCH信号
+            sigprocmask(SIG_BLOCK, &sig_resize, nullptr);   //加入信号屏蔽字
+
+            struct winsize ter_size;
+
+            while (true) {
+                if (!isatty(STDOUT_FILENO) || ioctl(STDOUT_FILENO, TIOCGWINSZ, &ter_size) == -1) {
+                    fprintf(stderr, "snakecli: not a terminal\n");
+                    return 1;
+                }
+
+                printf("Terminal size: %dx%d", ter_size.ws_col, ter_size.ws_row);
+
+                if (ter_size.ws_col % 6 == 0) {
+                    const int col_before = ter_size.ws_col;
+                    usleep(100000);
+                    ioctl(STDOUT_FILENO, TIOCGWINSZ, &ter_size);
+                    if (ter_size.ws_col == col_before) {   // 防抖
+                        printf("\tGood size!\n");
+                        return 0;
+                    }
+                    printf("\n");
+                    continue;
+                }
+
+                printf("\ttry %dx%d or %dx%d", ter_size.ws_col + (6 - ter_size.ws_col % 6), ter_size.ws_row, ter_size.ws_col - ter_size.ws_col % 6, ter_size.ws_row);
+                printf("\n");
+
+                int sig;
+                sigwait(&sig_resize, &sig);
+            }
         }
 
         fprintf(stderr, "snakecli: invalid option -- '%s'\n", argv[1]);

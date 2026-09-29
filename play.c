@@ -19,13 +19,25 @@ typedef enum {PLAY_PLAYING, PLAY_PAUSED, PLAY_FINISHED, PLAY_QUIT} PlayState;
 typedef enum {UP, DOWN, LEFT, RIGHT, ESC = -1, NONE = -2} PlayDirection;    //枚举顺序与防掉头判定有关
 
 //生成苹果坐标
-static Position generate_apple_play(const SnakeCLI *snake_cli, Position game_max_size);
+static Position generate_apple_play(const SnakeCLI *snake_cli, Position game_size);
 
 //检查苹果是否在蛇身上
 static int is_on_snake(const SnakeCLI *snake_cli, int apple_row, int apple_col);
 
+//渲染蛇
+static void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli);
+
+//读取输入
+static int get_input_play(WINDOW *win);
+
+//将输入转换为PlayDirection所需
+static int map_the_key_play(int input);
+
+//接收逻辑坐标，在真实坐标绘制方块
+static void draw_cell(WINDOW *win, Position cell_positon, chtype cell_color);
+
 //游戏状态
-static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *score_win, SnakeCLI *snake_cli, Position ter_size, Position game_max_size, PlayDirection *play_direction);
+static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *score_win, SnakeCLI *snake_cli, Position ter_size, Position game_size, PlayDirection *play_direction);
 
 //暂停状态
 static PlayState play_paused(WINDOW *main_win, WINDOW *sentence_win, Position ter_size, GameState *state);
@@ -42,8 +54,12 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
     keypad(main_win, TRUE);
 
     //获取游戏主窗口大小
-    Position game_max_size;
-    getmaxyx(main_win, game_max_size.row, game_max_size.col);
+    Position game_true_size;
+    getmaxyx(main_win, game_true_size.row, game_true_size.col);
+
+    Position game_size;
+    game_size.row = game_true_size.row - 2;
+    game_size.col = game_true_size.col / 2 - 1;
 
     //开启非阻塞式输入
     nodelay(main_win, TRUE);
@@ -58,14 +74,14 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
 
     wclear(main_win);
     box(main_win, 0, 0);
-    snake_cli.head.row = game_max_size.row / 2;
-    snake_cli.head.col = (game_max_size.col - 1) / 2;
-    mvwaddch(main_win, snake_cli.head.row, snake_cli.head.col, SNAKE_CELL);
+    snake_cli.head.row = game_size.row / 2;
+    snake_cli.head.col = (game_size.col - 1) / 2;
+    draw_cell(main_win, snake_cli.head, SNAKE_CELL);
 
     snake_cli.path[0] = snake_cli.head;
 
-    snake_cli.apple = generate_apple_play(&snake_cli, game_max_size);
-    mvwaddch(main_win, snake_cli.apple.row, snake_cli.apple.col, APPLE_CELL);
+    snake_cli.apple = generate_apple_play(&snake_cli, game_size);
+    draw_cell(main_win, snake_cli.apple, APPLE_CELL);
 
     wrefresh(main_win);
 
@@ -83,7 +99,7 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
 
         switch (play_state) {
             case PLAY_PLAYING:
-                play_state = play_playing(main_win, sentence_win, score_win, &snake_cli, ter_size, game_max_size, &play_direction);
+                play_state = play_playing(main_win, sentence_win, score_win, &snake_cli, ter_size, game_size, &play_direction);
                 flushinp();
                 break;
             case PLAY_PAUSED:
@@ -112,15 +128,15 @@ GameState play(WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) 
         return state;
 }
 
-static Position generate_apple_play(const SnakeCLI *snake_cli, const Position game_max_size) {
-    const int game_area = (game_max_size.row - 2) * (game_max_size.col - 2);
+static Position generate_apple_play(const SnakeCLI *snake_cli, const Position game_size) {
+    const int game_area = game_size.row  * game_size.col;
     Position *free_cells = malloc(sizeof(Position) * game_area);
 
     Position apple = {.row = ERR, .col = ERR};
 
     int i = 0;
-    for (int r = 1; r <= game_max_size.row - 2; r++) {
-        for (int c = 1; c <= game_max_size.col - 2; c++) {
+    for (int r = 0; r < game_size.row; r++) {
+        for (int c = 0; c < game_size.col; c++) {
             if (!is_on_snake(snake_cli, r, c)) {
                 free_cells[i] = (Position){.row = r, .col = c};
                 i++;
@@ -146,7 +162,44 @@ static int is_on_snake(const SnakeCLI *snake_cli, const int apple_row, const int
     return 0;
 }
 
-static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *score_win, SnakeCLI *snake_cli, Position ter_size, Position game_max_size, PlayDirection *play_direction) {
+static void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
+    draw_cell(main_win, snake_cli->head, SNAKE_CELL);
+    draw_cell(main_win, snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP], DEFAULT_CELL);
+}
+
+static int get_input_play(WINDOW *win) {
+    const int input = wgetch(win);
+
+    static const int available_keys[] = {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, 27};
+    for (size_t i = 0; i < sizeof(available_keys)/sizeof(available_keys[0]); ++i) {
+        if (input == available_keys[i]) return input;
+    }
+
+    return ERR;
+}
+
+static int map_the_key_play(const int input) {
+    switch (input) {
+        case KEY_UP:
+            return 0;
+        case KEY_DOWN:
+            return 1;
+        case KEY_LEFT:
+            return 2;
+        case KEY_RIGHT:
+            return 3;
+        case 27:
+            return -1;
+        default: return -2;
+    }
+}
+
+void draw_cell(WINDOW *win, const Position cell_positon, const chtype cell_color) {
+    mvwaddch(win, cell_positon.row + 1, cell_positon.col * 2 + 1, cell_color);
+    mvwaddch(win, cell_positon.row + 1, cell_positon.col * 2 + 2, cell_color);
+}
+
+static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *score_win, SnakeCLI *snake_cli, Position ter_size, const Position game_size, PlayDirection *play_direction) {
     //创建方向向量
     static const Position DELTA[] = {
         [UP] = {.row = -1, .col = 0},
@@ -170,12 +223,12 @@ static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *sc
     //判定是否吃到苹果
     if (snake_cli->head.row == snake_cli->apple.row && snake_cli->head.col == snake_cli->apple.col) {
         snake_cli->len++;
-        snake_cli->apple = generate_apple_play(snake_cli, game_max_size);
+        snake_cli->apple = generate_apple_play(snake_cli, game_size);
     }
 
     //判定是否死亡
-    if (snake_cli->head.row < 1 || snake_cli->head.row > game_max_size.row - 2 ||
-        snake_cli->head.col < 1 || snake_cli->head.col > game_max_size.col - 2)
+    if (snake_cli->head.row < 0 || snake_cli->head.row > game_size.row - 1 ||
+        snake_cli->head.col < 0 || snake_cli->head.col > game_size.col - 1)
     {
         return PLAY_FINISHED;
     }
@@ -193,7 +246,7 @@ static PlayState play_playing(WINDOW *main_win, WINDOW *sentence_win, WINDOW *sc
     if (snake_cli->apple.row == ERR) return PLAY_FINISHED;
 
     render_snake_play(main_win, snake_cli);
-    mvwaddch(main_win, snake_cli->apple.row, snake_cli->apple.col, APPLE_CELL);
+    draw_cell(main_win, snake_cli->apple, APPLE_CELL);
     wrefresh(main_win);
 
     char msg[32]="";

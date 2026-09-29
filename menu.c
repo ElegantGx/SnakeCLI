@@ -11,6 +11,12 @@
 //选项状态
 typedef enum {MENU_PLAY, MENU_ABOUT, MENU_EXIT} MenuState;
 
+//绘制开始菜单的蛇LOGO
+static void print_logo_menu(WINDOW *logo_win);
+
+//绘制开始菜单的ABOUT选项
+static void print_about_menu(WINDOW *about_win);
+
 //处理MENU状态
 GameState menu (WINDOW *main_win, WINDOW *sentence_win, const Position ter_size) {
     GameState state = MENU;
@@ -74,4 +80,46 @@ GameState menu (WINDOW *main_win, WINDOW *sentence_win, const Position ter_size)
         delwin(menu_options_win[MENU_ABOUT]);
         delwin(menu_options_win[MENU_EXIT]);
         return state;
+}
+
+static void print_logo_menu(WINDOW *logo_win) {
+    static const char *logo[] = {
+        " ____              _",
+        "/ ___| _ __   __ _| | _____",
+        "\\___ \\| '_ \\ / _` | |/ / _ \\",
+        " ___) | | | | (_| |   <  __/",
+        "|____/|_| |_|\\__,_|_|\\_\\___|",
+        "",
+        "        ____ _     ___",
+        "       / ___| |   |_ _|",
+        "      | |   | |    | |",
+        "      | |___| |___ | |",
+        "       \\____|_____|___|"
+    };
+    constexpr int logo_rows = 11;
+    constexpr int logo_cols  = 28;
+
+    int rows, cols;
+    getmaxyx(logo_win, rows, cols);
+    const int start_y = (rows - logo_rows) / 2;
+    const int start_x = (cols - logo_cols) / 2;
+
+    for (int i = 0; i < logo_rows; i++)
+        mvwprintw(logo_win, start_y + i, start_x, "%s", logo[i]);
+    wrefresh(logo_win);
+}
+
+static void print_about_menu(WINDOW *about_win) {
+    wclear(about_win);
+    box(about_win, 0, 0);
+    mvwprintw(about_win, 1, 2, "About Snake:");
+    mvwprintw(about_win, 3, 2,"This game is made by Gx.");
+    mvwprintw(about_win, 5, 2,"How to play the game?");
+    mvwprintw(about_win, 7, 2,"Press UP DOWN LEFT RIGHT to move the snake.");
+    mvwprintw(about_win, 8, 2,"Press ENTER to confirm.");
+    mvwprintw(about_win, 9, 2,"Press ESC to paused game.");
+    mvwprintw(about_win, 11, 2, "Don't resize Terminal when you are playing.");
+    mvwprintw(about_win, 12, 2, "The game wil reset.");
+    mvwprintw(about_win, 14, 2,"Now press ESC to close About.");
+    wrefresh(about_win);
 }

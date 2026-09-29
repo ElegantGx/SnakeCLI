@@ -85,34 +85,6 @@ int check_command_mode(const int argc, const char **argv) {
     return -1;
 }
 
-//绘制开始菜单的蛇LOGO
-void print_logo_menu(WINDOW *logo_win) {
-    static const char *logo[] = {
-        " ____              _",
-        "/ ___| _ __   __ _| | _____",
-        "\\___ \\| '_ \\ / _` | |/ / _ \\",
-        " ___) | | | | (_| |   <  __/",
-        "|____/|_| |_|\\__,_|_|\\_\\___|",
-        "",
-        "        ____ _     ___",
-        "       / ___| |   |_ _|",
-        "      | |   | |    | |",
-        "      | |___| |___ | |",
-        "       \\____|_____|___|"
-    };
-    constexpr int logo_rows = 11;
-    constexpr int logo_cols  = 28;
-
-    int rows, cols;
-    getmaxyx(logo_win, rows, cols);
-    const int start_y = (rows - logo_rows) / 2;
-    const int start_x = (cols - logo_cols) / 2;
-
-    for (int i = 0; i < logo_rows; i++)
-        mvwprintw(logo_win, start_y + i, start_x, "%s", logo[i]);
-    wrefresh(logo_win);
-}
-
 //传入窗口、单行文本，将文本居中打印至该窗口
 void print_center_window(WINDOW *win, const char *text) {
     int row, col;
@@ -121,22 +93,6 @@ void print_center_window(WINDOW *win, const char *text) {
     row = row / 2;
     if (col < 1) col = 1;
     mvwprintw(win, row, col, "%s", text);
-}
-
-//绘制开始菜单的ABOUT选项
-void print_about_menu(WINDOW *about_win) {
-    wclear(about_win);
-    box(about_win, 0, 0);
-    mvwprintw(about_win, 1, 2, "About Snake:");
-    mvwprintw(about_win, 3, 2,"This game is made by Gx.");
-    mvwprintw(about_win, 5, 2,"How to play the game?");
-    mvwprintw(about_win, 7, 2,"Press UP DOWN LEFT RIGHT to move the snake.");
-    mvwprintw(about_win, 8, 2,"Press ENTER to confirm.");
-    mvwprintw(about_win, 9, 2,"Press ESC to paused game.");
-    mvwprintw(about_win, 11, 2, "Don't resize Terminal when you are playing.");
-    mvwprintw(about_win, 12, 2, "The game wil reset.");
-    mvwprintw(about_win, 14, 2,"Now press ESC to close About.");
-    wrefresh(about_win);
 }
 
 //绘制新选项
@@ -182,43 +138,5 @@ int select_option (WINDOW *win, WINDOW *options_wins[], const char *options_labe
         selected_option = (selected_option + options_count) % options_count;   // 循环切换
         draw_selected_option(options_wins, options_label, options_count, selected_option);
         if (tmp_input == KEY_ENTER || tmp_input == '\n') return selected_option;
-    }
-}
-
-//渲染蛇
-void render_snake_play(WINDOW *main_win, const SnakeCLI *snake_cli) {
-    mvwaddch(main_win, snake_cli->head.row, snake_cli->head.col, SNAKE_CELL);
-    mvwaddch(
-        main_win, snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].row,
-        snake_cli->path[(snake_cli->step - snake_cli->len + CAP) % CAP].col, DEFAULT_CELL
-    );
-}
-
-//读取输入
-int get_input_play(WINDOW *win) {
-    const int input = wgetch(win);
-
-    static const int available_keys[] = {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, 27};
-    for (size_t i = 0; i < sizeof(available_keys)/sizeof(available_keys[0]); ++i) {
-        if (input == available_keys[i]) return input;
-    }
-
-    return ERR;
-}
-
-//将输入转换为PlayDirection所需
-int map_the_key_play(const int input) {
-    switch (input) {
-        case KEY_UP:
-            return 0;
-        case KEY_DOWN:
-            return 1;
-        case KEY_LEFT:
-            return 2;
-        case KEY_RIGHT:
-            return 3;
-        case 27:
-            return -1;
-        default: return -2;
     }
 }

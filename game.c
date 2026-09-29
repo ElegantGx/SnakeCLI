@@ -50,7 +50,7 @@ int game() {
     //获取终端大小
     int ter_row, ter_col;
     getmaxyx(stdscr, ter_row, ter_col);
-    if (ter_row < 20 || ter_col < 35) {
+    if (ter_row < 23 || ter_col < 35) {
         endwin();
         fprintf(stderr, "Your terminal is too small.\n");
         return 0;

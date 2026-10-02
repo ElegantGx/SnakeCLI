@@ -97,7 +97,7 @@ int game() {
             case EXIT: goto cleanup_by_exit;
             default:
                 endwin();
-                return 4;
+                return 5;
         }
     }
 
@@ -109,15 +109,15 @@ int game() {
 
     cleanup_by_resize:
         endwin();
-        return 1;
+        return 2;
 
     cleanup_by_sigint:
         endwin();
-        return 2;
+        return 3;
 
     cleanup_by_sigquit:
         endwin();
-        return 3;
+        return 4;
 }
 
 static int check_terminal(const Position ter_size) {

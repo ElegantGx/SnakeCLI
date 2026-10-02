@@ -43,11 +43,11 @@ int main(const int argc, const char *argv[]) {
         //判断是否正常退出
         if (WIFEXITED(status)) {
             const int exit_code = WEXITSTATUS(status);
-            if (exit_code == 0 || exit_code == 2 || exit_code == 3) {
+            if (exit_code == 0 || exit_code == 3 || exit_code == 4) {
                 system("stty sane");
                 break;
             }
-            if (exit_code == 4) {
+            if (exit_code != 2) {
                 crash_count++;
             }
         } else if (WIFSIGNALED(status)) {
